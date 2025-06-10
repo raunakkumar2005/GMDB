@@ -14,7 +14,7 @@
   <h3 align="center">An Awwwards Winning Website</h3>
 
    <div align="center">
-     Build the landing Page of this project step by step with a detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
+     Build the landing Page of this project step by step with a detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube.
     </div>
 </div>
 
