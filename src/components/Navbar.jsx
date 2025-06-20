@@ -3,17 +3,15 @@ import gsap from "gsap";
 import { useWindowScroll } from "react-use";
 import { useEffect, useRef, useState } from "react";
 import { TiLocationArrow } from "react-icons/ti";
-
-import Button from "./Button";
-
+import { useNavigate, useNavigation } from "react-router-dom";
+import { FiSearch } from "react-icons/fi";
 const navItems = ["Nexus", "Vault", "Prologue", "About", "Contact"];
 
 const NavBar = () => {
-  // State for toggling audio and visual indicator
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isIndicatorActive, setIsIndicatorActive] = useState(false);
-
-  // Refs for audio and navigation container
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
   const audioElementRef = useRef(null);
   const navContainerRef = useRef(null);
 
@@ -21,13 +19,19 @@ const NavBar = () => {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Toggle audio and visual indicator
   const toggleAudioIndicator = () => {
     setIsAudioPlaying((prev) => !prev);
     setIsIndicatorActive((prev) => !prev);
   };
 
-  // Manage audio playback
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
   useEffect(() => {
     if (isAudioPlaying) {
       audioElementRef.current.play();
@@ -38,15 +42,12 @@ const NavBar = () => {
 
   useEffect(() => {
     if (currentScrollY === 0) {
-      // Topmost position: show navbar without floating-nav
       setIsNavVisible(true);
       navContainerRef.current.classList.remove("floating-nav");
     } else if (currentScrollY > lastScrollY) {
-      // Scrolling down: hide navbar and apply floating-nav
       setIsNavVisible(false);
       navContainerRef.current.classList.add("floating-nav");
     } else if (currentScrollY < lastScrollY) {
-      // Scrolling up: show navbar with floating-nav
       setIsNavVisible(true);
       navContainerRef.current.classList.add("floating-nav");
     }
@@ -69,21 +70,50 @@ const NavBar = () => {
     >
       <header className="absolute top-1/2 w-full -translate-y-1/2">
         <nav className="flex size-full items-center justify-between p-4">
-          {/* Logo and Product button */}
-          <div className="flex items-center gap-7">
-            <img src="/img/logo.png" alt="logo" className="w-10" />
+          {/* Logo and Dropdown */}
+          <div className="flex items-center gap-7 relative">
+            <img src="/img/logo.png" alt="logo" className="w-10" onClick={() => {
+              navigate("/")
+            }} />
 
-            <Button
-              id="product-button"
-              title="Products"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-blue-50 md:flex hidden items-center justify-center gap-1"
-            />
+            {/* Explore Dropdown Button */}
+            <div className="relative">
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center gap-1 rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-blue-100 transition duration-300"
+              >
+                Explore <TiLocationArrow />
+              </button>
+
+              {/* Dropdown Content */}
+              {isDropdownOpen && (
+                <div
+                  className="absolute left-0 mt-2 w-40 rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden"
+                  onMouseLeave={closeDropdown}
+                >
+                  <a
+                    href="/anime"
+                    className="block px-5 py-3 text-sm text-gray-800 hover:bg-blue-100 hover:text-black transition duration-200"
+                    onClick={closeDropdown}
+                  >
+                    Anime
+                  </a>
+                  <a
+                    href="/games"
+                    className="block px-5 py-3 text-sm text-gray-800 hover:bg-blue-100 hover:text-black transition duration-200"
+                    onClick={closeDropdown}
+                  >
+                    Games
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Navigation Links and Audio Button */}
-          <div className="flex h-full items-center">
-            <div className="hidden md:block">
+          <div className="flex items-center gap-4">
+            {/* Nav links - hidden on small screens */}
+            <div className="hidden md:flex gap-4">
               {navItems.map((item, index) => (
                 <a
                   key={index}
@@ -95,9 +125,10 @@ const NavBar = () => {
               ))}
             </div>
 
+            {/* Audio Indicator */}
             <button
               onClick={toggleAudioIndicator}
-              className="ml-10 flex items-center space-x-0.5"
+              className="flex items-center space-x-0.5"
             >
               <audio
                 ref={audioElementRef}
@@ -117,7 +148,17 @@ const NavBar = () => {
                 />
               ))}
             </button>
+
+            {/* Search Button - Small Icon */}
+            <button
+              onClick={() => navigate("/search")}
+              className="text-white hover:text-indigo-400 transition"
+              title="Search"
+            >
+              <FiSearch size={20} />
+            </button>
           </div>
+
         </nav>
       </header>
     </div>

@@ -12,6 +12,8 @@ import AnimeDesc from "./pages/AnimeDesc";
 import GameDetailPage from "./pages/gameDesc";
 import GameSingle from "./pages/GameSingle";
 import Games from "./pages/Game";
+import SearchPage from "./pages/Search";
+
 
 function Home() {
   return (
@@ -37,7 +39,7 @@ function App() {
           <Route path="/games" element={<Games/>} />
           <Route path="/anime/:id" element={<AnimeDesc />} />
           <Route path="/games/:slug" element={<GameSingle />} />
-          {/* <Route path="/page2" element={<NewPage2 />} /> */}
+          <Route path="/search" element={<SearchPage />} />
           {/* Add more routes here as needed */}
         </Routes>
       </main>

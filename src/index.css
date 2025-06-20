@@ -235,6 +235,21 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
 }
 
+/* Remove number input spinners - cross-browser */
+input[type="number"] {
+  appearance: textfield;        /* Standard syntax */
+  -moz-appearance: textfield;   /* Firefox */
+  -webkit-appearance: none;     /* Chrome, Safari, Edge */
+}
+
+/* Specifically hide inner spin buttons for WebKit browsers */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
 
 .three-body__dot:nth-child(3) {
   bottom: -5%;
