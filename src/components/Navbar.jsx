@@ -1,16 +1,20 @@
 import clsx from "clsx";
 import gsap from "gsap";
 import { useWindowScroll } from "react-use";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { TiLocationArrow } from "react-icons/ti";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
+import { useModal } from "../context/ModalContext";
+ // Import your global modal context
+
 const navItems = ["Nexus", "Vault", "Prologue", "About", "Contact"];
 
 const NavBar = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isIndicatorActive, setIsIndicatorActive] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { openModal } = useModal(); // ✅ Global modal trigger
   const navigate = useNavigate();
   const audioElementRef = useRef(null);
   const navContainerRef = useRef(null);
@@ -24,32 +28,24 @@ const NavBar = () => {
     setIsIndicatorActive((prev) => !prev);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
-  };
-
   useEffect(() => {
     if (isAudioPlaying) {
-      audioElementRef.current.play();
+      audioElementRef.current?.play().catch(() => {});
     } else {
-      audioElementRef.current.pause();
+      audioElementRef.current?.pause();
     }
   }, [isAudioPlaying]);
 
   useEffect(() => {
     if (currentScrollY === 0) {
       setIsNavVisible(true);
-      navContainerRef.current.classList.remove("floating-nav");
+      navContainerRef.current?.classList.remove("floating-nav");
     } else if (currentScrollY > lastScrollY) {
       setIsNavVisible(false);
-      navContainerRef.current.classList.add("floating-nav");
+      navContainerRef.current?.classList.add("floating-nav");
     } else if (currentScrollY < lastScrollY) {
       setIsNavVisible(true);
-      navContainerRef.current.classList.add("floating-nav");
+      navContainerRef.current?.classList.add("floating-nav");
     }
 
     setLastScrollY(currentScrollY);
@@ -70,49 +66,26 @@ const NavBar = () => {
     >
       <header className="absolute top-1/2 w-full -translate-y-1/2">
         <nav className="flex size-full items-center justify-between p-4">
-          {/* Logo and Dropdown */}
+          {/* Logo and Modal Button */}
           <div className="flex items-center gap-7 relative">
-            <img src="/img/logo.png" alt="logo" className="w-10" onClick={() => {
-              navigate("/")
-            }} />
+            <img
+              src="/img/logo.png"
+              alt="logo"
+              className="w-10 cursor-pointer"
+              onClick={() => navigate("/")}
+            />
 
-            {/* Explore Dropdown Button */}
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center gap-1 rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-blue-100 transition duration-300"
-              >
-                Explore <TiLocationArrow />
-              </button>
-
-              {/* Dropdown Content */}
-              {isDropdownOpen && (
-                <div
-                  className="absolute left-0 mt-2 w-40 rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden"
-                  onMouseLeave={closeDropdown}
-                >
-                  <a
-                    href="/anime"
-                    className="block px-5 py-3 text-sm text-gray-800 hover:bg-blue-100 hover:text-black transition duration-200"
-                    onClick={closeDropdown}
-                  >
-                    Anime
-                  </a>
-                  <a
-                    href="/games"
-                    className="block px-5 py-3 text-sm text-gray-800 hover:bg-blue-100 hover:text-black transition duration-200"
-                    onClick={closeDropdown}
-                  >
-                    Games
-                  </a>
-                </div>
-              )}
-            </div>
+            {/* Explore Modal Button */}
+            <button
+              onClick={openModal} // ✅ Global modal trigger
+              className="flex items-center gap-1 rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-blue-100 transition duration-300"
+            >
+              Explore <TiLocationArrow />
+            </button>
           </div>
 
           {/* Navigation Links and Audio Button */}
           <div className="flex items-center gap-4">
-            {/* Nav links - hidden on small screens */}
             <div className="hidden md:flex gap-4">
               {navItems.map((item, index) => (
                 <a
@@ -149,7 +122,7 @@ const NavBar = () => {
               ))}
             </button>
 
-            {/* Search Button - Small Icon */}
+            {/* Search Button */}
             <button
               onClick={() => navigate("/search")}
               className="text-white hover:text-indigo-400 transition"
@@ -158,7 +131,6 @@ const NavBar = () => {
               <FiSearch size={20} />
             </button>
           </div>
-
         </nav>
       </header>
     </div>

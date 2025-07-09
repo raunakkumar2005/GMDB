@@ -10,6 +10,8 @@ const RedditPosts = ({ subreddit = 'gaming' }) => {
         const res = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
         const data = await res.json();
         setPosts(data.data.children.slice(0, 8));
+        console.log(data.data.children.slice(0, 8));
+
       } catch (err) {
         console.error('Failed to fetch Reddit posts:', err);
       }
@@ -29,16 +31,20 @@ const RedditPosts = ({ subreddit = 'gaming' }) => {
             rel="noopener noreferrer"
             className="min-w-[320px] bg-zinc-900 rounded-xl overflow-hidden shadow-md hover:scale-[1.03] transition-transform duration-300"
           >
-            {post.thumbnail && post.thumbnail.startsWith('http') ? (
+            {post.thumbnail && post.thumbnail.startsWith('https') ? (
               <img
-                src={post.thumbnail}
+                src={post.thumbnail.replace(/&amp;/g, '&')}
                 alt="thumbnail"
                 className="w-full h-40 object-cover"
               />
             ) : (
-              <img  src ="https://bgr.com/wp-content/uploads/2024/08/Reddit-Logo.jpg?quality=82&strip=all&resize=1400,1400" className="w-full h-40 bg-zinc-800 flex items-center justify-center text-gray-500 text-sm"/>
-                
+              <img
+                src="https://bgr.com/wp-content/uploads/2024/08/Reddit-Logo.jpg?quality=82&strip=all&resize=1400,1400"
+                alt="fallback"
+                className="w-full h-40 bg-zinc-800 object-cover"
+              />
             )}
+
             <div className="p-4 space-y-2">
               <h3 className="text-white font-semibold text-base line-clamp-2">{post.title}</h3>
               <div className="text-sm text-gray-400 flex items-center justify-between">

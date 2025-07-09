@@ -13,12 +13,15 @@ import GameDetailPage from "./pages/gameDesc";
 import GameSingle from "./pages/GameSingle";
 import Games from "./pages/Game";
 import SearchPage from "./pages/Search";
+import { ModalProvider } from "./context/ModalContext";
+import RouteChangeHandler from "./context/RouteChangeHandler";
+import Modal from "./components/Modal";
 
 
 function Home() {
   return (
     <>
-    <NavBar />
+      <NavBar />
       <Hero />
       <About />
       <Features />
@@ -32,17 +35,23 @@ function Home() {
 function App() {
   return (
     <Router>
-      <main className="relative min-h-screen w-screen overflow-x-hidden">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/anime" element={<Anime />} />
-          <Route path="/games" element={<Games/>} />
-          <Route path="/anime/:id" element={<AnimeDesc />} />
-          <Route path="/games/:slug" element={<GameSingle />} />
-          <Route path="/search" element={<SearchPage />} />
-          {/* Add more routes here as needed */}
-        </Routes>
-      </main>
+      <ModalProvider>
+        <RouteChangeHandler />
+        <Modal /> {/* Modal is global, no NavBar here */}
+
+        <main className="relative min-h-screen w-screen overflow-x-hidden">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/anime" element={<Anime />} />
+            <Route path="/games" element={<Games />} />
+            <Route path="/anime/:id" element={<AnimeDesc />} />
+            <Route path="/games/:slug" element={<GameSingle />} />
+            <Route path="/search" element={<SearchPage />} />
+            {/* Add more routes here as needed */}
+          </Routes>
+        </main>
+
+      </ModalProvider>
     </Router>
   );
 }

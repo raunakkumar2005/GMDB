@@ -56,7 +56,7 @@ export const MovieCard = ({ src, title, description, isComingSoon = false,id }) 
         {/* Description overlay */}
         {description && (
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            <p className="text-xs text-white">{description}</p>
+            <p className="text-xs text-white">{title}</p>
           </div>
         )}
 

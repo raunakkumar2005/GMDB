@@ -14,6 +14,7 @@ export const AnimeDetailPage = () => {
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const detailsRef = useRef(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const fetchAnime = async () => {
@@ -27,7 +28,7 @@ export const AnimeDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!anime || !heroRef.current) return;
+    if (!anime || !heroRef.current || !imageLoaded) return;
 
     gsap.from(containerRef.current, {
       opacity: 0,
@@ -65,6 +66,10 @@ export const AnimeDetailPage = () => {
   }, [anime]);
 
   if (!anime) return <div className="text-white p-10">Loading...</div>;
+  {!imageLoaded && (
+  <div className="absolute top-0 left-0 h-full w-full bg-[#0f0f23] animate-pulse z-10" />
+)}
+
 
   const trailerUrl = anime.trailer?.embed_url || null;
   const streamingLink = anime.streaming?.[0]?.url || null;
@@ -77,9 +82,10 @@ export const AnimeDetailPage = () => {
       {/* Fullscreen Hero Section with Fold Animation */}
       <div ref={heroRef} className="relative h-screen w-full overflow-hidden" id="video-frame">
         <img
-          src={anime.images?.jpg?.image_url}
+          src={anime.images?.jpg?.large_image_url}
           alt={anime.title}
           className="absolute top-0 left-0 h-full w-full object-cover object-center"
+          onLoad={() => setImageLoaded(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/90 flex flex-col justify-end p-10">
           <div className="max-w-4xl space-y-6">
@@ -87,11 +93,23 @@ export const AnimeDetailPage = () => {
             <p className="text-white/80 text-sm md:text-base leading-relaxed max-w-2xl animate-fade-in-up delay-200">
               {anime.synopsis}
             </p>
-
             <Button
+            title="Watch Now"
+            leftIcon={<TiLocationArrow />}
+            containerClass="bg-white text-black flex-center gap-1"
+            onclick={() => {
+                if (streamingLink) {
+                  window.open(streamingLink, "_blank", "noopener noreferrer");
+                } else {
+                  alert("Watch link not available for this anime.");
+                }
+              }}
+          />
+            {/* <Button
               id="watch-now-btn"
               title="Watch Now"
               containerClass="mt-6"
+              leftIcon={<TiLocationArrow />}
               onclick={() => {
                 if (streamingLink) {
                   window.open(streamingLink, "_blank", "noopener noreferrer");
@@ -99,7 +117,7 @@ export const AnimeDetailPage = () => {
                   alert("Watch link not available for this anime.");
                 }
               }}
-            />
+            /> */}
           </div>
         </div>
       </div>
