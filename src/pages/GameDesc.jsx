@@ -10,7 +10,7 @@ import GameDetailHero from "../components/GameDetailHero";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const GameDetailPage = () => {
+const GameDetailPage = () => {
   const { slug } = useParams();
   const [game, setGame] = useState(null);
   const [screenshots, setScreenshots] = useState([]);
